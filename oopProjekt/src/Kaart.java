@@ -20,7 +20,6 @@ public class Kaart {
         this.mast = mast;
     }
 
-
     @Override
     public String toString() {
         return  mastid[this.mast] + " " + numbrid[this.number];
