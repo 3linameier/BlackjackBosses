@@ -2,7 +2,7 @@ public class BlackjackTest {
     public static void main(String[] args) {
         Kaart potiKuus = new Kaart(6, 3);
 
-        System.out.println(potiKuus);
+        System.out.println(potiKuus); // Printis: Poti kuus
     }
 }
 
