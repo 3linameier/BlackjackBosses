@@ -4,13 +4,23 @@ public class BlackjackTest {
 
         //System.out.println(potiKuus); // Printis: Poti kuus
 
-
+        /*
         for (Kaart kaart : kaardipakk()) {
             System.out.println(kaart);
         }
 
+         */
+
+
+        Kaardipakk uusPakk = new Kaardipakk();
+
+        System.out.println(uusPakk);
+
+
 
     }
+
+    /*
 
     public static Kaart[] kaardipakk(){
         Kaart[] kaardid = new Kaart[52];
@@ -29,6 +39,8 @@ public class BlackjackTest {
         }
         return kaardid;
     }
+
+     */
 }
 
 
