@@ -1,8 +1,33 @@
 public class BlackjackTest {
     public static void main(String[] args) {
-        Kaart potiKuus = new Kaart(6, 3);
+        //Kaart potiKuus = new Kaart(6, 3);
 
-        System.out.println(potiKuus); // Printis: Poti kuus
+        //System.out.println(potiKuus); // Printis: Poti kuus
+
+
+        for (Kaart kaart : kaardipakk()) {
+            System.out.println(kaart);
+        }
+
+
+    }
+
+    public static Kaart[] kaardipakk(){
+        Kaart[] kaardid = new Kaart[52];
+
+        int number = 1;
+        int mast = 0;
+        for (int i = 0; i < 52; i++) {
+            Kaart uusKaart = new Kaart(number, mast);
+            kaardid[i] = uusKaart;
+            if(number==13) {
+                number = 1;
+                mast++;
+            }
+            else
+                number++;
+        }
+        return kaardid;
     }
 }
 
