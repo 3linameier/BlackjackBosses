@@ -6,6 +6,7 @@ public class Kaart {
 
     private int number;
     private int mast;
+    private int vaartus;
 
     public int getNumber() {
         return number;
@@ -15,13 +16,18 @@ public class Kaart {
         return mast;
     }
 
-    public Kaart(int number, int mast) {
+    public int getVaartus() {
+        return vaartus;
+    }
+
+    public Kaart(int number, int mast, int vaartus) {
         this.number = number;
         this.mast = mast;
+        this.vaartus = vaartus;
     }
 
     @Override
     public String toString() {
-        return  mastid[this.mast] + " " + numbrid[this.number];
+        return  mastid[this.mast] + " " + numbrid[this.number]+ " "+ vaartus;
     }
 }
