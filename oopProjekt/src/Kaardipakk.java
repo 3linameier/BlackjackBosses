@@ -1,28 +1,31 @@
-import java.util.Arrays;
+import java.util.ArrayList;
 
 public class Kaardipakk {
 
+    /**
+     * Meetod teeb Kaart isenditest kaardipaki, kus on igat isendit neli korda ehk neli kaardipakki
+     * tagastab kaardipaki ArrayListina
+     */
+    public static ArrayList<Kaart> kaardipakk() {
+        ArrayList<Kaart> kaardid = new ArrayList<>();
+        for (int i = 0; i < 4; i++) { // teeme neli kaardipakki
+            for (int j = 1; j < 13; j++) {
+                for (int k = 1; k < 4; k++) {
+                    if (j >= 10) {
+                        Kaart uusKaart = new Kaart(j, k, 10);
+                        kaardid.add(uusKaart);
 
-    public static Kaart[] kaardipakk(){
-        Kaart[] kaardid = new Kaart[52];
-
-        int number = 1;
-        int mast = 0;
-        for (int i = 0; i < 52; i++) {
-            Kaart uusKaart = new Kaart(number, mast);
-            kaardid[i] = uusKaart;
-            if(number==13) {
-                number = 1;
-                mast++;
+                    } else if (j == 1) {
+                        Kaart uusKaart = new Kaart(j, k, 11);
+                        kaardid.add(uusKaart);
+                    } else {
+                        Kaart uusKaart = new Kaart(j, k, j);
+                        kaardid.add(uusKaart);
+                    }
+                }
             }
-            else
-                number++;
         }
-        return kaardid;
-    }
 
-    @Override
-    public String toString() {
-        return "Kaardipakk: "+ Arrays.toString(kaardipakk());
+        return kaardid;
     }
 }

@@ -28,6 +28,6 @@ public class Kaart {
 
     @Override
     public String toString() {
-        return  mastid[this.mast] + " " + numbrid[this.number]+ " "+ vaartus;
+        return  mastid[this.mast] + " " + numbrid[this.number]+ " "+ "väärtusega "+vaartus;
     }
 }
