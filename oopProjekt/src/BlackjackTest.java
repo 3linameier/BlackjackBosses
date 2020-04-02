@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -6,24 +7,49 @@ public class BlackjackTest {
 
 
     public static void main(String[] args) throws Exception {
-        int vastus;
+        int kordused;
+        int mangijaHitLimit;
+        int diilerHitLimit;
 
         System.out.println("Tere tulemast!");
         System.out.println("Mängime blackjacki!");
 
         Thread.sleep(1000);
 
-        System.out.print("Sisesta numbriga mitu korda soovid mängu läbi teha: ");
-        try (Scanner scan = new Scanner(System.in)) {
-            vastus = scan.nextInt();
-        }
+        System.out.print("Sisesta numbriga, mitu korda soovid mängu läbi teha(1-Integer.MAX_VALUE): ");
+        try (Scanner scan1 = new Scanner(System.in)) {
+            kordused = scan1.nextInt();
 
-        int[] tulemused = mangimangu(vastus);
-        for (int i = 0; i < tulemused.length; i++) {
-            System.out.println(tulemused[i]);
-        }
+            System.out.print("Sisesta numbriga, mida soovid mängija hitimise laeks(soovitatavalt vahemikus 16-20): ");
+            Scanner scan2 = new Scanner(System.in);
+            mangijaHitLimit = scan2.nextInt();
 
-    }
+            System.out.print("Sisesta numbriga, mida soovid diileri hitimise laeks(soovitatavalt vahemikus 16-20): ");
+            Scanner scan3 = new Scanner(System.in);
+            diilerHitLimit = scan3.nextInt();
+
+            int[] tulemused = mangimangu(kordused, mangijaHitLimit, diilerHitLimit);
+            /*
+            for (int value : tulemused) {
+                System.out.println(value);
+            }
+
+             */
+            int protsent = tulemused[0]/kordused*100;
+
+            System.out.println("Tegin mängu läbi "+kordused+" korda. Nendest võitsid sina "+tulemused[0]+" korral, kaotasid "+
+                    tulemused[2]+" korral ning jäid diileriga viiki "+tulemused[1]+" korral.\nMangija HIT piiri "+mangijaHitLimit+
+                            " ning diileri HIT piiri "+diilerHitLimit+" korral moodustasid sinu võidud kogu mängudest" +
+                    " seega "+protsent+"%.");
+
+
+        } catch (Exception e) {
+            System.out.println("Midagi läks untsu!");
+            e.printStackTrace();
+        }
+    }//main
+
+
     /**
      * Meetod teeb Kaart isenditest kaardipaki, kus on igat isendit neli korda ehk neli kaardipakki
      * tagastab kaardipaki ArrayListina
@@ -50,7 +76,14 @@ public class BlackjackTest {
         return kaardid;
     }
 
-    public static int[] mangimangu(int kordused) {
+    /**
+     * meeetodi kehas toimub kaardimängu mängimine vastavalt kasutaja sisestatud kordadele
+     * @param kordused mitu korda mäng läbi tehakse
+     * @param mangijaHitLimit kuna mängija lõpetab hitimise
+     * @param diilerHitLimit kuna diiler lõpetab hittimise
+     * @return tagastab massiivi, kus on mängija võitude, viikide, kaotuste arvud
+     */
+    public static int[] mangimangu(int kordused, int mangijaHitLimit, int diilerHitLimit) {
         int[] tulemused = new int[3];
         int voidud = 0;
         int kaotused = 0;
@@ -68,7 +101,7 @@ public class BlackjackTest {
             boolean mangijaBJack = false;
             boolean diilerBJack = false;
 
-            if (kaardipakk.size() < 10) { // Selleks, et saaks vähemalt ühe mängu veel ära mängida.
+            if (kaardipakk.size() < 12) { // Selleks, et saaks vähemalt ühe mängu veel ära mängida.
                 kaardipakk = kaardipakk();
             }
             ArrayList<Kaart> diilerKaardid = new ArrayList<>(); // Massiiv diileri kaartide hoiustamiseks
@@ -90,9 +123,11 @@ public class BlackjackTest {
             for (int j = 0; j < 2; j++) { // Lisab mängijale ja diilerile kaks suvalist kaarti.
                 mangijaKaartIx = rand.nextInt(kaardipakk.size());
                 mangijaKaardid.add(kaardipakk.get(mangijaKaartIx));
+                if (kaardipakk.get(mangijaKaartIx).getNumber()==1) mAssadeArv +=1;
                 kaardipakk.remove(mangijaKaartIx); // Võetud kaardid kustutatakse pakist, et ei tekiks korrdusi rohkem kui pakis on.
                 diilerKaartIx = rand.nextInt(kaardipakk.size());
                 diilerKaardid.add(kaardipakk.get(diilerKaartIx));
+                if (kaardipakk.get(diilerKaartIx).getNumber()==1) dAssadeArv +=1;
                 kaardipakk.remove(diilerKaartIx);
             }
 
@@ -106,7 +141,7 @@ public class BlackjackTest {
             diilerVaartus += diilerKaardid.get(0).getVaartus() + diilerKaardid.get(1).getVaartus();
 
             //MÄNGIJA
-            if (mangijaVaartus>=17) {
+            if (mangijaVaartus>=mangijaHitLimit) {
                 if (mangijaVaartus==21) mangijaBJack = true;
                 if (mangijaVaartus>21) mangijaBust = true;
                 System.out.println("Su kaartide väärtus: "+mangijaVaartus+", STAND.");
@@ -117,18 +152,16 @@ public class BlackjackTest {
                     System.out.println("HIT");
                     mangijaKaartIx = rand.nextInt(kaardipakk.size());
                     Kaart uus = kaardipakk.get(mangijaKaartIx);
+                    if (kaardipakk.get(mangijaKaartIx).getNumber()==1) mAssadeArv += 1;
                     mangijaKaardid.add(uus);
                     System.out.println(uus);
                     mangijaVaartus += uus.getVaartus();
                     kaardipakk.remove(mangijaKaartIx);
                     System.out.println("Nüüd on su kaartide väärtus: " + mangijaVaartus);
 
-                    for (int j = 0; j < mangijaKaardid.size() ; j++) {
-                        if (mangijaKaardid.get(j).getNumber()==1);
-                            mAssadeArv += 1;
-                    }
 
-                    while (mangijaVaartus >= 17) {
+
+                    while (mangijaVaartus >= mangijaHitLimit) {
                         if (mangijaVaartus == 21) {
                             mangijaBJack = true;
                             break;
@@ -144,7 +177,7 @@ public class BlackjackTest {
                                     }
                                 }
                             }
-                            if (mangijaVaartus>=17) {
+                            if (mangijaVaartus>=mangijaHitLimit) {
                                 mangijaBust = true;
                                 break;
                             }
@@ -157,7 +190,7 @@ public class BlackjackTest {
             }
 
             //DIILER
-            if (diilerVaartus>=17) {
+            if (diilerVaartus>=diilerHitLimit) {
                 if (diilerVaartus==21) diilerBJack = true;
                 if (diilerVaartus>21) diilerBust = true;
                 System.out.println("Diileri kaartide väärtus: "+diilerVaartus+", STAND.");
@@ -168,18 +201,15 @@ public class BlackjackTest {
                     System.out.println("HIT");
                     diilerKaartIx = rand.nextInt(kaardipakk.size());
                     Kaart uus = kaardipakk.get(diilerKaartIx);
+                    if (kaardipakk.get(diilerKaartIx).getNumber()==1) dAssadeArv += 1;
                     diilerKaardid.add(uus);
                     System.out.println(uus);
                     diilerVaartus += uus.getVaartus();
                     kaardipakk.remove(diilerKaartIx);
                     System.out.println("Nüüd on diileri kaartide väärtus: " + diilerVaartus);
 
-                    for (int j = 0; j < diilerKaardid.size() ; j++) {
-                        if (diilerKaardid.get(j).getNumber()==1);
-                        dAssadeArv += 1;
-                    }
 
-                    while (diilerVaartus >= 17) {
+                    while (diilerVaartus >= diilerHitLimit) {
                         if (diilerVaartus == 21) {
                             diilerBJack = true;
                             break;
@@ -195,7 +225,7 @@ public class BlackjackTest {
                                     }
                                 }
                             }
-                            if (diilerVaartus>=17) {
+                            if (diilerVaartus>=diilerHitLimit) {
                                 diilerBust = true;
                                 break;
                             }
@@ -207,84 +237,7 @@ public class BlackjackTest {
                 }
             }
 
-
-                    /*
-
-                    System.out.println("Su kaartide väärtus on: " + mangijaVaartus);
-                    System.out.println("Hit v Stand?");
-                    if (mangijaVaartus < 17) {
-                        System.out.println("Mängija HIT");
-                        mangijaKaartIx = rand.nextInt(kaardipakk.size());
-                        mangijaKaardid.add(kaardipakk.get(mangijaKaartIx));
-                        kaardipakk.remove(mangijaKaartIx);
-                        mangijaVaartus = 0;
-                        for (int u = 0; u < mangijaKaardid.size(); u++) {
-                            mangijaVaartus += mangijaKaardid.get(u).getVaartus();
-                        }
-                        System.out.println("Su kaartide väärtus on: " + mangijaVaartus);
-                    }
-                    if (mangijaVaartus > 21) {
-                        mangijaBust = true;
-                        System.out.println("Mängija Bust");
-                        break;
-                    } else {
-                        mangijaStand = true;
-                        System.out.println("Mängja STAND");
-                        System.out.println("Mängija lõplik kaardiväärtus on " + mangijaVaartus);
-                    }
-                }
-            }
-
-            /*
-            if ((mangijaKaardid.get(0).getVaartus() + mangijaKaardid.get(1).getVaartus()) == 21) {
-                System.out.println("Blackjack! Juhuu!");
-                System.out.println("Võitsid");
-                break;
-            } else if ((diilerKaardid.get(0).getVaartus() + diilerKaardid.get(1).getVaartus()) == 21) {
-                System.out.println("Diileri Blackjack");
-                System.out.println("Kaotasid");
-                break;
-            }
-
-             */
-
-
-
-
-        /*
-            while (!diilerStand) {
-                for (int l = 0; l < diilerKaardid.size(); l++) {
-                    diilerVaartus += diilerKaardid.get(l).getVaartus();
-                    if (diilerKaardid.get(l).getNumber() == 1) {
-                        assadeArv += 1;
-                        if (diilerVaartus > 21) {
-                            diilerVaartus -= 10 * assadeArv;
-                        }
-                    }
-                }
-                if (diilerVaartus < 17) {
-                    diilerKaartIx = rand.nextInt(kaardipakk.size());
-                    diilerKaardid.add(kaardipakk.get(diilerKaartIx));
-                    kaardipakk.remove(diilerKaartIx);
-                    diilerVaartus = 0;
-                    for (int m = 0; m < diilerKaardid.size(); m++) {
-                        diilerVaartus += diilerKaardid.get(m).getVaartus();
-                    }
-                }
-                if (diilerVaartus > 21) {
-                    System.out.println("Diileri Bust");
-                    diilerBust = true;
-                    break;
-                } else {
-                    diilerStand = true;
-                }
-            }
-
-         */
-
-
-
-
+            //Võit või kaotus
             if (mangijaBust) {
                 if (diilerBust) {
                     System.out.println("Viik");
